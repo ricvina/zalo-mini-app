@@ -1,13 +1,13 @@
 import React, { FC } from "react";
-import { Box, Header, Text } from "zmp-ui";
+import { Box, Header, Text, Input, useNavigate } from "zmp-ui";
 import { useRecoilValueLoadable } from "recoil";
 import { userState } from "state";
-import logo from "static/logo.png";
+import logo from "static/3T.png";
 import appConfig from "../../../app-config.json";
-import { getConfig } from "utils/config";
+// import { getConfig } from "utils/config";
 
 export const Welcome: FC = () => {
-  const user = useRecoilValueLoadable(userState);
+  const navigate = useNavigate();
 
   return (
     <Header
@@ -17,10 +17,16 @@ export const Welcome: FC = () => {
         (
           <Box flex alignItems="center" className="space-x-2">
             <img
-              className="w-8 h-8 rounded-lg border-inset"
-              src={getConfig((c) => c.template.headerLogo) || logo}
+              className="w-24 h-7 rounded-lg border-none"
+              src={logo}
             />
-            <Box>
+            <Box noSpace className="bg-white" height={36} flex>
+              <Input.Search className="input-search"
+                onFocus={() => navigate("/search")}
+                placeholder="Tìm nhanh sản phẩm ..."
+              />
+            </Box>
+            {/* <Box>
               <Text.Title size="small">{appConfig.app.title}</Text.Title>
               {user.state === "hasValue" ? (
                 <Text size="xxSmall" className="text-gray">
@@ -29,8 +35,11 @@ export const Welcome: FC = () => {
               ) : (
                 <Text>...</Text>
               )}
-            </Box>
+            </Box> */}
           </Box>
+
+
+
         ) as unknown as string
       }
     />

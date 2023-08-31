@@ -10,17 +10,19 @@ import ProfilePage from "pages/profile";
 import SearchPage from "pages/search";
 import { getSystemInfo } from "zmp-sdk";
 import { ScrollRestoration } from "./scroll-restoration";
+import MiniGamePage from "pages/mini-game";
 
-if (getSystemInfo().platform === "android") {
-  const androidSafeTop = Math.round(
-    (window as any).ZaloJavaScriptInterface.getStatusBarHeight() /
-      window.devicePixelRatio
-  );
-  document.body.style.setProperty(
-    "--zaui-safe-area-inset-top",
-    `${androidSafeTop}px`
-  );
-}
+// bỏ test local
+// if (getSystemInfo().platform === "android") {
+//   const androidSafeTop = Math.round(
+//     (window as any).ZaloJavaScriptInterface.getStatusBarHeight() /
+//       window.devicePixelRatio
+//   );
+//   document.body.style.setProperty(
+//     "--zaui-safe-area-inset-top",
+//     `${androidSafeTop}px`
+//   );
+// }
 
 export const Layout: FC = () => {
   return (
@@ -31,6 +33,7 @@ export const Layout: FC = () => {
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/search" element={<SearchPage />}></Route>
           <Route path="/category" element={<CategoryPage />}></Route>
+          <Route path="/mini-game" element={<MiniGamePage />}></Route>
           <Route path="/notification" element={<NotificationPage />}></Route>
           <Route path="/cart" element={<CartPage />}></Route>
           <Route path="/profile" element={<ProfilePage />}></Route>

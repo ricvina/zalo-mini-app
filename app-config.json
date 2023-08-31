@@ -1,8 +1,8 @@
 {
   "app": {
-    "title": "ZaUI Coffee",
+    "title": "",
     "headerColor": "",
-    "textColor": "black",
+    "textColor": "",
     "statusBarColor": "#ffffff",
     "leftButton": "none",
     "statusBar": "transparent",

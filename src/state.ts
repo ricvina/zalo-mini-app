@@ -1,14 +1,7 @@
 import { atom, selector, selectorFamily } from "recoil";
-import { getLocation, getPhoneNumber, getUserInfo } from "zmp-sdk";
-import coffeeIcon from "static/category-coffee.svg";
-import matchaIcon from "static/category-matcha.svg";
-import foodIcon from "static/category-food.svg";
-import milkteaIcon from "static/category-milktea.svg";
-import drinksIcon from "static/category-drinks.svg";
-import breadIcon from "static/category-bread.svg";
-import juiceIcon from "static/category-juice.svg";
-import logo from "static/logo.png";
+import { getLocation, getPhoneNumber, getUserInfo, openChat } from "zmp-sdk";
 import { Category, CategoryId } from "types/category";
+import { Topic } from "types/topic"
 import { Product, Variant } from "types/product";
 import { Cart } from "types/cart";
 import { Notification } from "types/notification";
@@ -16,7 +9,58 @@ import { calculateDistance } from "utils/location";
 import { Store } from "types/delivery";
 import { calcFinalPrice, getDummyImage } from "utils/product";
 import { wait } from "utils/async";
+import shop from "static/topic-shop.svg";
+import game from "static/topic-game.svg"
 
+export const oaState = atom({
+  key: "oaId",
+  default: "1717024216432568302"
+})
+
+//------ get data
+export const getDataState = selector({
+  key: "data",
+  get: async ({ get }) => {
+    const id = get(oaState);
+    return await fetch(`https://rifa.vn/api/mini-app/get-data/${id}`).then((res) => res.json());
+  }
+})
+
+// export const dataState = selector({
+//   key: "data",
+//   get: ({ get }) => {
+//     return get(getDataState);
+//   }
+// })
+
+
+//------ chat Zalo
+export const chatState = selector({
+  key: "chat",
+  get: async ({ get }) => {
+    const oaId = get(oaState);
+    return await openChat({ type: "oa", id: oaId }).then();
+  },
+});
+//------ end chat
+//------ topic
+export const setTopicIdState = atom({
+  key: "setTopicId",
+  default: ""
+})
+
+export const topicState = selector<Topic[]>({
+  key: "topics",
+  get: () => [
+    { id: "1", name: "Shop", icon: shop },
+    { id: "1", name: "Đặt lịch", icon: shop },
+    { id: "1", name: "Dịch vụ bảo trì", icon: shop },
+    { id: "1", name: "Ví voucher", icon: shop },
+    { id: "1", name: "Mini game", icon: game },
+    { id: "1", name: "Hỗ trợ", icon: shop }
+  ]
+})
+//------end topic
 export const userState = selector({
   key: "user",
   get: () => getUserInfo({}).then((res) => res.userInfo),
@@ -25,13 +69,13 @@ export const userState = selector({
 export const categoriesState = selector<Category[]>({
   key: "categories",
   get: () => [
-    { id: "coffee", name: "Cà phê", icon: coffeeIcon },
-    { id: "matcha", name: "Trà xanh", icon: matchaIcon },
-    { id: "food", name: "Đồ ăn vặt", icon: foodIcon },
-    { id: "milktea", name: "Trà sữa", icon: milkteaIcon },
-    { id: "drinks", name: "Giải khát", icon: drinksIcon },
-    { id: "bread", name: "Bánh mỳ", icon: breadIcon },
-    { id: "juice", name: "Nước ép", icon: juiceIcon },
+    { id: "coffee", name: "Cà phê", icon: "coffeeIcon" },
+    { id: "matcha", name: "Trà xanh", icon: "matchaIcon" },
+    { id: "food", name: "Đồ ăn vặt", icon: "foodIcon" },
+    { id: "milktea", name: "Trà sữa", icon: "milkteaIcon" },
+    { id: "drinks", name: "Giải khát", icon: "drinksIcon" },
+    { id: "bread", name: "Bánh mỳ", icon: "breadIcon" },
+    { id: "juice", name: "Nước ép", icon: "juiceIcon" },
   ],
 });
 
@@ -244,12 +288,12 @@ export const productsByCategoryState = selectorFamily<Product[], CategoryId>({
   key: "productsByCategory",
   get:
     (categoryId) =>
-    ({ get }) => {
-      const allProducts = get(productsState);
-      return allProducts.filter((product) =>
-        product.categoryId.includes(categoryId)
-      );
-    },
+      ({ get }) => {
+        const allProducts = get(productsState);
+        return allProducts.filter((product) =>
+          product.categoryId.includes(categoryId)
+        );
+      },
 });
 
 export const cartState = atom<Cart>({
@@ -282,14 +326,14 @@ export const notificationsState = atom<Notification[]>({
   default: [
     {
       id: 1,
-      image: logo,
+      image: "",
       title: "Chào bạn mới",
       content:
         "Cảm ơn đã sử dụng ZaUI Coffee, bạn có thể dùng ứng dụng này để tiết kiệm thời gian xây dựng",
     },
     {
       id: 2,
-      image: logo,
+      image: "logo",
       title: "Giảm 50% lần đầu mua hàng",
       content: "Nhập WELCOME để được giảm 50% giá trị đơn hàng đầu tiên order",
     },
